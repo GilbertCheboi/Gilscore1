@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from .models import User
 
-
 class RegistrationSerializer(serializers.ModelSerializer):
     """Serializers registration requests and creates a new user."""
 
@@ -80,5 +79,4 @@ class LoginSerializer(serializers.Serializer):
             )
 
 
-
-       
+   
