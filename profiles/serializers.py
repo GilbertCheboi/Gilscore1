@@ -69,25 +69,30 @@ class PublicProfileSerializer(serializers.ModelSerializer):
     NBA = serializers.ImageField(source='NBA.icon')
     NFL = serializers.ImageField(source='NFL.icon')
     Worldcup = serializers.ImageField(source='Worldcup.icon')
-    #EnglishPremierLeague = serializers.ImageField(source='EnglishPremierLeague.icon')
-    #Team = serializers.ImageField(source='Team.icon')
+
     class Meta:
         model = Profile
         fields = [
             "first_name",
             "last_name",
-            "is_following",
-            "user",
-            "following_count",
-            "follower_count",
+            "id",
             "image",
-            "club",
-            "club_icon",
+            "Afcon",
+            "Baseball",
+            "Bundesliga",
+            "Europa",
+            "Formula1",
+            "Laliga",
+            "NBA",
+            "NFL",
+            "Worldcup",
             "bio",
             "location",
-            "followers",
+            "follower_count",
+            "following_count",
+            "is_following",
             "username",
-           # "feed",
+
         ]
     
     def get_is_following(self, obj):

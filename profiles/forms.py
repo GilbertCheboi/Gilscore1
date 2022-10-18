@@ -39,8 +39,6 @@ class ProfileForm(forms.ModelForm):
             "last_name",
             "email",
             "image",
-            # "club",
-            "club_icon",
             "bio",
             "location",
             "followers",
