@@ -14,7 +14,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from ..models import Profile
 from ..serializers import ProfileSerializer, PublicProfileSerializer
-from accounts.models import User
+User = get_user_model()
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 

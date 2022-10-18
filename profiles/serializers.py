@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from .models import Profile, ChampionLeague, AfconLeague, Baseball, Bundesliga, Formula1, Laliga, NBA, NFL, Worldcup
 from tweets.models import Tweet
 #from tweets.serializers import TweetSerializer
-from accounts.models import User
+#from accounts.models import User
 
 class UserProfileSerializer(serializers.ModelSerializer):
     location = serializers.CharField(required=False)
@@ -26,7 +26,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     Team = serializers.ImageField(required=False)
     Team = serializers.ImageField(required=False)
     class Meta:
-        model = User
+        model = Profile
         fields = ['first_name', 'last_name', 'email',]
 
 
@@ -60,17 +60,17 @@ class PublicProfileSerializer(serializers.ModelSerializer):
     #feed = serializers.SerializerMethodField(read_only=True)
     follower_count = serializers.SerializerMethodField(read_only=True)
     following_count = serializers.SerializerMethodField(read_only=True)
-    # Afcon = serializers.ImageField()
-    # Baseball = serializers.ImageField()
-    # Bundesliga = serializers.ImageField()
-    # Europa = serializers.ImageField()
-    # Formula1 = serializers.ImageField()
-    # Laliga = serializers.ImageField()
-    # NBA = serializers.ImageField()
-    # NFL = serializers.ImageField()
-    # Worldcup = serializers.ImageField()
-    # EnglishPremierLeague = serializers.ImageField(source='EnglishPremierLeague.icon')
-    # Team = serializers.ImageField(source='Team.icon')
+    Afcon = serializers.ImageField(source='Afcon.icon')
+    Baseball = serializers.ImageField(source='Baseball.icon')
+    Bundesliga = serializers.ImageField(source='Bundesliga.icon')
+    Europa = serializers.ImageField(source='Europa.icon')
+    Formula1 = serializers.ImageField(source='Formula1.icon')
+    Laliga = serializers.ImageField(source='Laliga.icon')
+    NBA = serializers.ImageField(source='NBA.icon')
+    NFL = serializers.ImageField(source='NFL.icon')
+    Worldcup = serializers.ImageField(source='Worldcup.icon')
+    #EnglishPremierLeague = serializers.ImageField(source='EnglishPremierLeague.icon')
+    #Team = serializers.ImageField(source='Team.icon')
     class Meta:
         model = Profile
         fields = [

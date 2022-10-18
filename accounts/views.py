@@ -1,95 +1,81 @@
-from lib2to3.pgen2 import token
-from urllib import response
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.exceptions import AuthenticationFailed
-from .serializers import RegistrationSerializer,  LoginSerializer
-from .models import User
-import jwt
-import datetime
-from django.conf import settings
-from rest_framework import viewsets, mixins, permissions
+# from rest_framework import generics, permissions
+# from rest_framework.response import Response
+# from knox.models import AuthToken
+# from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+# from django.contrib.auth import login
+# from rest_framework import permissions
+# from rest_framework.authtoken.serializers import AuthTokenSerializer
+# from knox.views import LoginView as KnoxLoginView
+
+# class LoginAPI(KnoxLoginView):
+#     permission_classes = (permissions.AllowAny,)
+#     serializer_class = LoginSerializer
 
 
-# My accounts views
+#     def post(self, request, format=None):
+#         serializer = AuthTokenSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data['user']
+#         login(request, user)
+#         return super(LoginAPI, self).post(request, format=None)
 
-class RegisterView(APIView):
-    def post(self, request):
-        serializers = RegistrationSerializer(data=request.data)
+# # Register API
+# class RegisterAPI(generics.GenericAPIView):
+#     serializer_class = RegisterSerializer
 
-        if serializers.is_valid(raise_exception=True):
-            serializers.save()
-            return Response(serializers.data,
-                            status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializers.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.save()
+#         return Response({
+#         "user": UserSerializer(user, context=self.get_serializer_context()).data,
+#         "token": AuthToken.objects.create(user)[1]
+#         })
 
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+# Create your views here.
 
-class LoginView(APIView):
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+# Function based views to Class Based Views
 
-        user = User.objects.filter(email=email).first()
+def login_view(request, *args, **kwargs):
+    form = AuthenticationForm(request, data=request.POST or None)
+    if form.is_valid():
+        user_ = form.get_user()
+        login(request, user_)
+        return redirect("/")
+    context = {
+        "form": form,
+        "btn_label": "Login",
+        "title": "Login"
+    }
+    return render(request, "accounts/auth.html", context) 
 
-        if user is None:
-            raise AuthenticationFailed('User not found!')
-
-        # check if the user passwords match
-        if not user.check_password(password):
-            raise AuthenticationFailed('Incorrect password!')
-
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-
-        response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            'jwt': token
-        }
-
-        return response
-
-
-class UserView(APIView):
-    '''
-    Get an authenticated user
-    '''
-
-    def get(self, request):
-        # Get the cookie to retrieve the user
-        token = request.COOKIES.get('jwt')
-
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        try:
-            payload = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        user = User.objects.filter(id=payload['id']).first()
-
-        serializer = RegistrationSerializer(user)
-
-        return Response(serializer.data)
+def logout_view(request, *args, **kwargs):
+    if request.method == "POST":
+        logout(request)
+        return redirect("/login")
+    context = {
+        "form": None,
+        "description": "Are you sure you want to logout?",
+        "btn_label": "Click to Confirm",
+        "title": "Logout"
+    }
+    return render(request, "accounts/auth.html", context)
 
 
-class LogoutView(APIView):
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'Successfully logged out!'
-        }
-
-        return response
-
+def register_view(request, *args, **kwargs):
+    form = UserCreationForm(request.POST or None)
+    if form.is_valid():
+        user = form.save(commit=True)
+        user.set_password(form.cleaned_data.get("password1"))
+        # send a confirmation email to verify their account
+        login(request, user)
+        return redirect("/")
+    context = {
+        "form": form,
+        "btn_label": "Register",
+        "title": "Register"
+    }
+    return render(request, "accounts/auth.html", context)

@@ -3,7 +3,8 @@ from email.policy import default
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
-from accounts.models import User
+
+User = settings.AUTH_USER_MODEL
 
 
 CLUB_CHOICES = (
