@@ -162,14 +162,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS =True
 
 
-# DEFAULT_RENDERER_CLASSES = [
-#         'rest_framework.renderers.JSONRenderer',
-#     ]
+DEFAULT_RENDERER_CLASSES = [
+        'rest_framework.renderers.JSONRenderer',
+    ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        #'rest_framework.authentication.BasicAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'knox.auth.TokenAuthentication',
     ]
 }
@@ -178,18 +178,18 @@ DEFAULT_AUTHENTICATION_CLASSES = [
      'rest_framework.authentication.SessionAuthentication',
     
 ]
-# if DEBUG:
-#     DEFAULT_RENDERER_CLASSES += [
-#         'rest_framework.renderers.BrowsableAPIRenderer',
-#     ]
-#     # DEFAULT_AUTHENTICATION_CLASSES += [
-#     #      'tweetme2.rest_api.dev.DevAuthentication'
-#     #  ]
-# REST_FRAMEWORK = {
+if DEBUG:
+    DEFAULT_RENDERER_CLASSES += [
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+    # DEFAULT_AUTHENTICATION_CLASSES += [
+    #      'tweetme2.rest_api.dev.DevAuthentication'
+    #  ]
+REST_FRAMEWORK = {
     
-#     'DEFAULT_AUTHENTICATION_CLASSES': DEFAULT_AUTHENTICATION_CLASSES,
-#     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
-# }
+    'DEFAULT_AUTHENTICATION_CLASSES': DEFAULT_AUTHENTICATION_CLASSES,
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
+}
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 MEDIA_URL = '/media/'
 
