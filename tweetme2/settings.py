@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 
-#load_dotenv()
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # remember on same level as manage.py
@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#)=h)_wc*k%f=wk+!$x0t%1wx7*_50$a1%*75s$og(8$27$ju1'
+SECRET_KEY = os.getenv('SECRET_KEY')
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -195,23 +195,20 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 MEDIA_URL = '/media/'
 
 
-# AWS_STORAGE_BUCKET_NAME =  'gilscore'
-# AWS_S3_REGION_NAME = 'us-east-1' # e.g. us-east-2
-# AWS_ACCESS_KEY_ID = 'AKIAXDRNNI42RNA4JTM7'
-# AWS_SECRET_ACCESS_KEY = 'TfNsmDoiVJhXH6WgjUt992Dhg72UKXDwvbO5KbEZ'
+AWS_STORAGE_BUCKET_NAME =   os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME =  os.getenv('AWS_S3_REGION_NAME')# e.g. us-east-2
+AWS_ACCESS_KEY_ID =  os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY =  os.getenv('AWS_SECRET_ACCESS_KEY')
 
-# #Tell django-storages the domain to use to refer to static files.
-# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+#Tell django-storages the domain to use to refer to static files.
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
-# #Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
-# #you run `collectstatic`).
-#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
+#you run `collectstatic`).
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 STATICFILES_LOCATION = 'static'
-# STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+STATICFILES_STORAGE = 'custom_storages.StaticStorage'
 
 MEDIAFILES_LOCATION = 'media'
-#DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
-#arn:aws:s3:::gilscore
-#AKIAXDRNNI42RNA4JTM7
-#TfNsmDoiVJhXH6WgjUt992Dhg72UKXDwvbO5KbEZ
+DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
