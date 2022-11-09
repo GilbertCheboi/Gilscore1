@@ -29,7 +29,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.25.107', '127.0.0.1','Gilscore3-dev.us-west-1.elasticbeanstalk.com', '172.31.26.131', '.cfe.sh', 'localhost']
+ALLOWED_HOSTS = ['192.168.25.107', '127.0.0.1','sportsappmedia.eba-33xy2mq5.us-east-1.elasticbeanstalk.com', '172.31.26.131', '.cfe.sh', 'localhost']
 
 #ALLOWED_HOSTS = ['SportsApp.eba-h3jtbm88.us-west-2.elasticbeanstalk.com']
 
