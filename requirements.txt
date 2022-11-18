@@ -35,3 +35,7 @@ six==1.16.0
 sqlparse==0.4.3
 urllib3==1.26.12
 validators==0.20.0
+whitenoise
+python-dotenv==0.21.0
+psycopg2-binary
+psycopg2
