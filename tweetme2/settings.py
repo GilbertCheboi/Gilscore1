@@ -113,8 +113,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django',
         'USER': 'Gillykim',
-        'PASSWORD':"30230192Gilly!",
-        #'PASSWORD': os.getenv("DB_PASSWORD"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': 'gilscore-database.postgres.database.azure.com',
         'PORT': '',
         'OPTIONS':{"sslmode":"require"}
