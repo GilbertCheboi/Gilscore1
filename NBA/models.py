@@ -43,7 +43,7 @@ class TweetManager(models.Manager):
 
 class Tweet(models.Model):
     # Maps to SQL data
-    # id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="NBAtweets") # many users can many tweets
     likes = models.ManyToManyField(User, related_name='NBAtweet_user', blank=True, through=NBATweetLike)
@@ -91,12 +91,13 @@ class Comment(models.Model):
     #id = models.AutoField(primary_key=True)
     parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
     tweet = models.ForeignKey(Tweet,  on_delete=models.CASCADE, null=True, related_name="NBA_comments")
-    user=models.ForeignKey(User,on_delete=models.CASCADE, related_name="NBAcomments")
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="NBAcomments")
     likes = models.ManyToManyField(User, related_name='NBAcomment_user', blank=True, through=NBACommentLike)
     content=models.TextField(blank=True, null=True)
     video = models.FileField(upload_to='videos/', blank=True, null=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
-    timestamp=models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    countcomments = models.ForeignKey('self', related_name='count_comments', blank='True', null='True', on_delete=models.CASCADE)
 
     objects = TweetManager()
 
@@ -124,15 +125,6 @@ class Comment(models.Model):
         }
 
 
-
-
-    class Meta:
-        ordering = ['-id']
-    
-    @property
-    def is_retweet(self):
-        return self.parent != None
-    from django.db import models
 
 class NBAVideo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

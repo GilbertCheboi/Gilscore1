@@ -62,10 +62,17 @@ class TweetCreateSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     user = PublicProfileSerializer(source='user.profile', read_only=True) # serializers.SerializerMethodField(read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
-    image = serializers.SerializerMethodField()
+    #image = serializers.SerializerMethodField()
     class Meta:
         model = Comment
-        fields = ['user', 'id', 'content', 'likes','image',  'timestamp']
+        fields = ['user', 
+                   'id',
+                   'tweet', 
+                    'content', 
+                    'likes',
+                    'image',  
+                    'timestamp'
+                    ]
 
 
     def get_likes(self, obj):
@@ -99,6 +106,7 @@ class CommentTweetSerializer(serializers.ModelSerializer):
         fields = [
                 'user', 
                 'id', 
+                'tweet',
                 'content',
                 'image',
                 'likes',
@@ -108,12 +116,12 @@ class CommentTweetSerializer(serializers.ModelSerializer):
     def get_likes(self,obj):
         return obj.likes.count()
 
-    # def get_image(self, obj):
-    #     try:
-    #         image = obj.image.url
-    #     except:
-    #         image = None
-    #     return image 
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+        return image 
 
 
 class TweetSerializer(serializers.ModelSerializer):

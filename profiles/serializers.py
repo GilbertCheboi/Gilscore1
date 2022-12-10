@@ -10,6 +10,8 @@ from tweets.models import Tweet
 
 class UserProfileSerializer(serializers.ModelSerializer):
     location = serializers.CharField(required=False)
+    First_Name = serializers.CharField(required=False)
+    Last_Name = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
     image = serializers.ImageField(required=False)
     clubimage = serializers.ImageField(required=False)
@@ -31,19 +33,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
+    # first_name = serializers.CharField(required=False)
+    # last_name = serializers.CharField(required=False)
     email = serializers.CharField(required=False)
     username = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Profile
-        fields = ['location', 'bio', 'first_name','last_name','image', 'email', 'username','clubimage', 'Afcon', 'Baseball', 'Bundesliga', 'Europa','Formula1', 'Laliga', 'NBA', 'NFL', 'Worldcup']
+        fields = ['location', 'bio', 'First_Name','Last_Name','image', 'email', 'username','clubimage', 'Afcon', 'Baseball', 'Bundesliga', 'Europa','Formula1', 'Laliga', 'NBA', 'NFL', 'Worldcup']
     def get_username(self, obj):
         return obj.user.username
 
 class ProfileBasicSerializer(serializers.Serializer):
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
+    First_Name = serializers.CharField(required=False)
+    Last_Name = serializers.CharField(required=False)
     email_address = serializers.CharField(required=False)
     image = serializers.ImageField(required=False)
     location = serializers.CharField(required=False)
@@ -53,28 +55,28 @@ class ProfileBasicSerializer(serializers.Serializer):
 
 
 class PublicProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.SerializerMethodField(read_only=True)
-    last_name = serializers.SerializerMethodField(read_only=True)
+    # first_name = serializers.SerializerMethodField(read_only=True)
+    # last_name = serializers.SerializerMethodField(read_only=True)
     is_following = serializers.SerializerMethodField(read_only=True)
     username = serializers.SerializerMethodField(read_only=True)
     #feed = serializers.SerializerMethodField(read_only=True)
     follower_count = serializers.SerializerMethodField(read_only=True)
     following_count = serializers.SerializerMethodField(read_only=True)
-    Afcon = serializers.ImageField()
-    Baseball = serializers.ImageField()
-    Bundesliga = serializers.ImageField()
-    Europa = serializers.ImageField()
-    Formula1 = serializers.ImageField()
-    Laliga = serializers.ImageField()
-    NBA = serializers.ImageField()
-    NFL = serializers.ImageField()
-    Worldcup = serializers.ImageField()
+    Afcon = serializers.ImageField(source='Afcon.icon')
+    Baseball = serializers.ImageField(source='Baseball.icon')
+    Bundesliga = serializers.ImageField(source='Bundesliga.icon')
+    Europa = serializers.ImageField(source='Europa.icon')
+    Formula1 = serializers.ImageField(source='Formula1.icon')
+    Laliga = serializers.ImageField(source='Laliga.icon')
+    NBA = serializers.ImageField(source='NBA.icon')
+    NFL = serializers.ImageField(source='NFL.icon')
+    Worldcup = serializers.ImageField(source='Worldcup.icon')
 
     class Meta:
         model = Profile
         fields = [
-            "first_name",
-            "last_name",
+            "First_Name",
+            "Last_Name",
             "id",
             "image",
             "Afcon",
@@ -92,7 +94,6 @@ class PublicProfileSerializer(serializers.ModelSerializer):
             "following_count",
             "is_following",
             "username",
-
         ]
     
     def get_is_following(self, obj):

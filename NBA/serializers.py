@@ -3,7 +3,7 @@ from django.conf import settings
 from rest_framework import serializers
 from profiles.serializers import PublicProfileSerializer
 from .models import Tweet, Comment, NBAVideo, CommentNBAVideo
-
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 MAX_TWEET_LENGTH = settings.MAX_TWEET_LENGTH
 TWEET_ACTION_OPTIONS = settings.TWEET_ACTION_OPTIONS
@@ -62,10 +62,17 @@ class TweetCreateSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     user = PublicProfileSerializer(source='user.profile', read_only=True) # serializers.SerializerMethodField(read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
-    image = serializers.SerializerMethodField()
     class Meta:
         model = Comment
-        fields = ['user', 'id', 'content', 'likes','image',  'timestamp']
+        fields = [
+            'user', 
+             'id', 
+            'tweet', 
+            'content', 
+             'likes',
+             'image',  
+             'timestamp'
+            ]
 
 
     def get_likes(self, obj):
@@ -94,27 +101,35 @@ class CommentTweetSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField()
     parent = CommentCreateSerializer(read_only=True)
+    
     class Meta:
         model = Comment
         fields = [
                 'user', 
                 'id', 
+                'tweet',
                 'content',
                 'image',
                 'likes',
                 'is_retweet',
                 'parent',
                 'timestamp']
+
+   
     def get_likes(self,obj):
         return obj.likes.count()
 
-    # def get_image(self, obj):
-    #     try:
-    #         image = obj.image.url
-    #     except:
-    #         image = None
-    #     return image 
-
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+        return image 
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['timestamp'] = naturaltime(instance.timestamp)
+        return representation
 
 class TweetSerializer(serializers.ModelSerializer):
     user = PublicProfileSerializer(source='user.profile', read_only=True)
@@ -122,6 +137,7 @@ class TweetSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     #image = serializers.SerializerMethodField()
     parent = TweetCreateSerializer(read_only=True)
+    total_comments = serializers.SerializerMethodField()
     class Meta:
         model = Tweet
         fields = [
@@ -132,11 +148,23 @@ class TweetSerializer(serializers.ModelSerializer):
                 'likes',
                 'is_retweet',
                 'parent',
-                'timestamp']
-                #'tweets_comments']
+                'timestamp',
+                'total_comments'
+        ]
+
+    def get_total_comments(self, obj, **kwargs):
+        
+        total = Comment.objects.filter(tweet=obj.id).count()
+        return total
+   
 
     def get_likes(self, obj):
         return obj.likes.count()
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['timestamp'] = naturaltime(instance.timestamp)
+        return representation
 
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:

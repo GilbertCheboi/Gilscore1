@@ -76,21 +76,23 @@ class FollowerRelation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey("Profile", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-
+    
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.FileField( blank=True, null=True,upload_to='images/')
     clubimage = models.ImageField(max_length=220, choices= CLUB_CHOICES, default='Manchester')
     location = models.CharField(max_length=220, null=True, blank=True)
-    Afcon = models.ForeignKey(AfconLeague, on_delete=models.SET_DEFAULT, default='', null=True)
-    Baseball = models.ForeignKey(Baseball, on_delete=models.SET_DEFAULT, default='', null=True)
-    Bundesliga = models.ForeignKey(Bundesliga, on_delete=models.SET_DEFAULT, default='', null=True)
-    Europa = models.ForeignKey(EuropaLeague, on_delete=models.SET_DEFAULT, default='', null=True)
-    Formula1 = models.ForeignKey(Formula1, on_delete=models.SET_DEFAULT, default='', null=True)
-    Laliga = models.ForeignKey(Laliga, on_delete=models.SET_DEFAULT, default='', null=True)
-    NBA = models.ForeignKey(NBA, on_delete=models.SET_DEFAULT, default='', null=True)
-    NFL = models.ForeignKey(NFL, on_delete=models.SET_DEFAULT, default='', null=True)
-    Worldcup = models.ForeignKey(Worldcup, on_delete=models.SET_DEFAULT, default='', null=True)
+    Afcon = models.ForeignKey(AfconLeague, on_delete=models.CASCADE, default='', null=True)
+    Baseball = models.ForeignKey(Baseball, on_delete=models.CASCADE, default='', null=True)
+    Bundesliga = models.ForeignKey(Bundesliga, on_delete=models.CASCADE, default='', null=True)
+    Europa = models.ForeignKey(EuropaLeague, on_delete=models.CASCADE, default='', null=True)
+    Formula1 = models.ForeignKey(Formula1, on_delete=models.CASCADE, default='', null=True)
+    Laliga = models.ForeignKey(Laliga, on_delete=models.CASCADE, default='', null=True)
+    NBA = models.ForeignKey(NBA, on_delete=models.CASCADE, default='', null=True)
+    NFL = models.ForeignKey(NFL, on_delete=models.CASCADE, default='', null=True)
+    Worldcup = models.ForeignKey(Worldcup, on_delete=models.CASCADE, default='', null=True)
+    First_Name = models.TextField(blank=True, null=True)
+    Last_Name = models.TextField(blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -105,6 +107,3 @@ class Profile(models.Model):
             Profile.objects.get_or_create(user=instance)
 
     post_save.connect(user_did_save, sender=User)
-
-
-# after the user logs in -> verify profile

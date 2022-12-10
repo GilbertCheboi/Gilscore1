@@ -53,6 +53,7 @@ class Tweet(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     #comments = models.ForeignKey("Comment", on_delete=models.CASCADE, related_name="Baseballcomments")
 
+
     objects = TweetManager()
     # def __str__(self):
     #     return self.content
@@ -97,6 +98,7 @@ class Comment(models.Model):
     content=models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     timestamp=models.DateTimeField(auto_now_add=True)
+    countcomments = models.ForeignKey('self', related_name='count_comments', blank='True', null='True', on_delete=models.CASCADE)
 
     objects = TweetManager()
 

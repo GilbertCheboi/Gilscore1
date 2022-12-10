@@ -11,13 +11,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..forms import TweetForm
-from ..models import Tweet, EuropaVideo, CommentEuropaVideo
+from ..models import Tweet, EuropaVideo, CommentEuropaVideo, Comment
 from ..serializers import (
     TweetSerializer, 
     TweetActionSerializer,
     TweetCreateSerializer,
     VideoSerializer,
     CommentTweetSerializer,
+    CommentCreateSerializer,
     CommentVideoSerializer
 )
 
@@ -141,24 +142,18 @@ def get_videos_view(request, *args, **kwags):
 
 @api_view(['POST'])
 def comment_tweet_view(request, *args, **kwags):
-    '''
-    Comment on a tweet made by a Youtweet user
-    '''
-    serializer = CommentTweetSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, 
-        status=status.HTTP_201_CREATED)            
-    else:
-        return Response(serializer.errors, 
-        status=status.HTTP_400_BAD_REQUEST)
+    serializer = CommentCreateSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)
 
 @api_view(['GET'])
 def see_all_tweet_comments(request, id, *args, **kwags):
     '''
     See all comments made on a tweet
     '''
-    commentedtweets = Tweet.objects.filter(tweet=id)
+    commentedtweets = Comment.objects.filter(tweet=id)
     serializetweetcomments = CommentTweetSerializer(commentedtweets, many=True)
 
     return Response(serializetweetcomments.data)

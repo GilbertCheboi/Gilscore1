@@ -4,30 +4,45 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 #from django.utils.http import is_safe_url
 from rest_framework import status
-
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import parser_classes
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..forms import TweetForm
-from ..models import Tweet, NBAVideo, CommentNBAVideo
+from ..models import Tweet, NBAVideo, CommentNBAVideo, Comment
 from ..serializers import (
     TweetSerializer, 
     TweetActionSerializer,
     TweetCreateSerializer,
     VideoSerializer,
     CommentTweetSerializer,
-    CommentVideoSerializer
+    CommentVideoSerializer,
+    CommentCreateSerializer
 )
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 @api_view(['POST']) # http method the client == POST
 # @authentication_classes([SessionAuthentication, MyCustomAuth])
+@parser_classes([MultiPartParser, FormParser])
 @permission_classes([IsAuthenticated]) # REST API course
 def tweet_create_view(request, *args, **kwargs):
+    
     serializer = TweetCreateSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)
+
+@api_view(['POST']) # http method the client == POST
+# @authentication_classes([SessionAuthentication, MyCustomAuth])
+@permission_classes([IsAuthenticated]) # REST API course
+def comment_tweet_view(request, *args, **kwargs):
+    
+    serializer = CommentCreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
@@ -139,26 +154,26 @@ def get_videos_view(request, *args, **kwags):
     
     return Response(serializevideos.data)
 
-@api_view(['POST'])
-def comment_tweet_view(request, *args, **kwags):
-    '''
-    Comment on a tweet made by a Youtweet user
-    '''
-    serializer = CommentTweetSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, 
-        status=status.HTTP_201_CREATED)            
-    else:
-        return Response(serializer.errors, 
-        status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['POST'])
+# def comment_tweet_view(request, *args, **kwags):
+#     '''
+#     Comment on a tweet made by a Youtweet user
+#     '''
+#     serializer = CommentTweetSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, 
+#         status=status.HTTP_201_CREATED)            
+#     else:
+#         return Response(serializer.errors, 
+#         status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def see_all_tweet_comments(request, id, *args, **kwags):
     '''
     See all comments made on a tweet
     '''
-    commentedtweets = Tweet.objects.filter(tweet=id)
+    commentedtweets = Comment.objects.filter(tweet=id)
     serializetweetcomments = CommentTweetSerializer(commentedtweets, many=True)
 
     return Response(serializetweetcomments.data)
@@ -223,7 +238,7 @@ def tweet_list_view_pure_django(request, *args, **kwargs):
     Consume by JavaScript or Swift/Java/iOS/Andriod
     return json data
     """
-    qs = Tweet.objects.all()
+    qs = Tweet.objects.filter(tweet=id)
     tweets_list = [x.serialize() for x in qs]
     data = {
         "isUser": False,

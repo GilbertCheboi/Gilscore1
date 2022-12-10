@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     # media/static storage
     'storages',
     'django_extensions',
+    'django.contrib.humanize',
 
 ]
 
@@ -113,12 +114,28 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django',
         'USER': 'Gillykim',
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': 'gilscore-database.postgres.database.azure.com',
+        'PASSWORD': '30230192Gilly!',
+        #'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': 'bongasport.postgres.database.azure.com',
         'PORT': '',
         'OPTIONS':{"sslmode":"require"}
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'mydatabase',
+#     }
+# }
+# DATABASES = {
+#     'default': {
+#         'ENGINE':'django.db.backends.postgresql',
+#         'NAME':'django',
+#         'USER':'Gillykim',
+#         'PASSWORD':'30230192Gilly!',
+#         'HOST':'localhost'
+#     }
+# }
 
 #AUTH_USER_MODEL = 'accounts.User'
 
@@ -184,7 +201,7 @@ DEFAULT_RENDERER_CLASSES = [
 # }
 
 DEFAULT_AUTHENTICATION_CLASSES = [
-     'rest_framework.authentication.SessionAuthentication',
+     #'rest_framework.authentication.SessionAuthentication',
      'knox.auth.TokenAuthentication',
     
 ]
