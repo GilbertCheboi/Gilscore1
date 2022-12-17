@@ -34,6 +34,8 @@ from ..serializers import (
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
+from django.contrib.auth.models import User
+
 @api_view(['POST']) # http method the client == POST
 # @authentication_classes([SessionAuthentication, MyCustomAuth])
 @permission_classes([IsAuthenticated]) # REST API course

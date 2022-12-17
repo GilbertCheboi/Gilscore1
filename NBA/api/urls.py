@@ -18,7 +18,8 @@ from .views import (
     see_all_tweet_comments,
     see_all_tweet_comments1,
     see_all_tweet_comments2,
-    see_all_tweet_comments3
+    see_all_tweet_comments3,
+    all_tweets_per_username
 )
 '''
 CLIENT
@@ -42,5 +43,6 @@ urlpatterns = [
     path('tweetcomments/<int:id>/', see_all_tweet_comments),
     path('tweetcomments1/<int:id>/', see_all_tweet_comments1),
     path('tweetcomments2/<int:id>/', see_all_tweet_comments2),
-    path('tweetcomments3/<int:id>/', see_all_tweet_comments3)
+    path('tweetcomments3/<int:id>/', see_all_tweet_comments3),
+    path('tweets-per-user/<username>/', all_tweets_per_username),
 ]
