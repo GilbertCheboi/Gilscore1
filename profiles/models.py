@@ -79,7 +79,7 @@ class FollowerRelation(models.Model):
     
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.FileField( blank=True, null=True,upload_to='images/')
+    image = models.ImageField( blank=True, null=True,upload_to='images/')
     clubimage = models.ImageField(max_length=220, choices= CLUB_CHOICES, default='Manchester')
     location = models.CharField(max_length=220, null=True, blank=True)
     Afcon = models.ForeignKey(AfconLeague, on_delete=models.CASCADE, default='', null=True)

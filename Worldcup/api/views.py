@@ -11,7 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..forms import TweetForm
-from ..models import Tweet, WorldcupVideo, CommentWorldcupVideo, Comment
+from ..models import Tweet, WorldcupVideo, CommentWorldcupVideo, Comment, Comment1, Comment2, Comment3
 from ..serializers import (
     TweetSerializer, 
     TweetActionSerializer,
@@ -19,7 +19,15 @@ from ..serializers import (
     VideoSerializer,
     CommentTweetSerializer,
     CommentCreateSerializer,
-    CommentVideoSerializer
+    CommentVideoSerializer,
+    Comment1CreateSerializer,
+    Comment2CreateSerializer,
+    Comment3CreateSerializer,
+    Comment1TweetSerializer,
+    Comment2TweetSerializer,
+    Comment3TweetSerializer
+
+    
 )
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
@@ -147,6 +155,29 @@ def comment_tweet_view(request, *args, **kwags):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
     return Response({}, status=400)
+@api_view(['POST'])
+def comment1_tweet_view(request, *args, **kwags):
+    serializer = Comment1CreateSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)
+
+@api_view(['POST'])
+def comment2_tweet_view(request, *args, **kwags):
+    serializer = Comment2CreateSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)
+
+@api_view(['POST'])
+def comment3_tweet_view(request, *args, **kwags):
+    serializer = Comment3CreateSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)       
 
 @api_view(['GET'])
 def see_all_tweet_comments(request, id, *args, **kwags):
@@ -155,6 +186,36 @@ def see_all_tweet_comments(request, id, *args, **kwags):
     '''
     commentedtweets = Comment.objects.filter(tweet=id)
     serializetweetcomments = CommentTweetSerializer(commentedtweets, many=True)
+
+    return Response(serializetweetcomments.data)
+
+@api_view(['GET'])
+def see_all_tweet_comments1(request, id, *args, **kwags):
+    '''
+    See all comments made on a tweet
+    '''
+    commentedtweets = Comment1.objects.filter(comment=id)
+    serializetweetcomments = Comment1TweetSerializer(commentedtweets, many=True)
+
+    return Response(serializetweetcomments.data)
+
+@api_view(['GET'])
+def see_all_tweet_comments2(request, id, *args, **kwags):
+    '''
+    See all comments made on a tweet
+    '''
+    commentedtweets = Comment2.objects.filter(comment1=id)
+    serializetweetcomments = Comment2TweetSerializer(commentedtweets, many=True)
+
+    return Response(serializetweetcomments.data)
+
+@api_view(['GET'])
+def see_all_tweet_comments3(request, id, *args, **kwags):
+    '''
+    See all comments made on a tweet
+    '''
+    commentedtweets = Comment3.objects.filter(comment2=id)
+    serializetweetcomments = Comment3TweetSerializer(commentedtweets, many=True)
 
     return Response(serializetweetcomments.data)
 
@@ -244,29 +305,3 @@ def tweet_detail_view_pure_django(request, tweet_id, *args, **kwargs):
         data['message'] = "Not found"
         status = 404
     return JsonResponse(data, status=status) # json.dumps content_type='application/json'
-
-
-@api_view(['POST'])
-def upload_video_view(request, *args, **kwags):
-    '''
-    Upload a video for other users to see and comment on.
-    '''
-    serializevideos = VideoSerializer(data=request.data)
-
-    if serializevideos.is_valid():
-        serializevideos.save()
-        return Response(serializevideos.data,
-        status=status.HTTP_201_CREATED)
-    else:
-        return Response(serializevideos.errors, 
-        status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def get_videos_view(request, *args, **kwags):
-    '''
-    See all videos uploaded by users
-    '''
-    videos = WorldcupVideo.objects.all()
-    serializevideos = VideoSerializer(videos, many=True)
-    
-    return Response(serializevideos.data)

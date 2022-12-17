@@ -17,6 +17,22 @@ class Formula1CommentLike(models.Model):
     comment = models.ForeignKey("Comment", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+class Formula1CommentLike1(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment1 = models.ForeignKey("Comment1", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True) 
+
+class Formula1CommentLike2(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment2 = models.ForeignKey("Comment2", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class Formula1CommentLike3(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment3 = models.ForeignKey("Comment3", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
 class TweetQuerySet(models.QuerySet):
     def by_username(self, username):
         return self.filter(user__username__iexact=username)
@@ -98,6 +114,151 @@ class Comment(models.Model):
     video = models.FileField(upload_to='videos/', blank=True, null=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     timestamp=models.DateTimeField(auto_now_add=True)
+    
+
+    objects = TweetManager()
+
+ #   def __str__(self):
+  #      return 'comment on {} by {}'.format(self.post.title,self.user.username)
+
+
+
+
+    class Meta:
+        ordering = ['-id']
+    
+    @property
+    def is_retweet(self):
+        return self.parent != None
+    
+    def serialize(self):
+        '''
+        Feel free to delete!
+        '''
+        return {
+            "id": self.id,
+            "content": self.content,
+            "likes": random.randint(0, 200)
+        }
+
+
+
+
+    class Meta:
+        ordering = ['-id']
+    
+    @property
+    def is_retweet(self):
+        return self.parent != None
+    from django.db import models
+
+class Comment1(models.Model):
+    #id = models.AutoField(primary_key=True)
+    parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
+    comment = models.ForeignKey(Comment,  on_delete=models.CASCADE, null= True, related_name="Formula1_comments1")
+    user=models.ForeignKey(User,on_delete=models.CASCADE, related_name="Formula1comments1")
+    likes = models.ManyToManyField(User, related_name='Formula1comment_user1', blank=True, through=Formula1CommentLike1)
+    content=models.TextField(blank=True, null=True)
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    timestamp=models.DateTimeField(auto_now_add=True)
+    
+
+    objects = TweetManager()
+
+ #   def __str__(self):
+  #      return 'comment on {} by {}'.format(self.post.title,self.user.username)
+
+
+
+
+    class Meta:
+        ordering = ['-id']
+    
+    @property
+    def is_retweet(self):
+        return self.parent != None
+    
+    def serialize(self):
+        '''
+        Feel free to delete!
+        '''
+        return {
+            "id": self.id,
+            "content": self.content,
+            "likes": random.randint(0, 200)
+        }
+
+
+
+
+    class Meta:
+        ordering = ['-id']
+    
+    @property
+    def is_retweet(self):
+        return self.parent != None
+    from django.db import models
+
+class Comment2(models.Model):
+    #id = models.AutoField(primary_key=True)
+    parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
+    comment1 = models.ForeignKey(Comment1,  on_delete=models.CASCADE, null= True, related_name="Formula1_comments2")
+    user=models.ForeignKey(User,on_delete=models.CASCADE, related_name="Formula1comments2")
+    likes = models.ManyToManyField(User, related_name='Formula1comment_user2', blank=True, through=Formula1CommentLike2)
+    content=models.TextField(blank=True, null=True)
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    timestamp=models.DateTimeField(auto_now_add=True)
+    
+
+    objects = TweetManager()
+
+ #   def __str__(self):
+  #      return 'comment on {} by {}'.format(self.post.title,self.user.username)
+
+
+
+
+    class Meta:
+        ordering = ['-id']
+    
+    @property
+    def is_retweet(self):
+        return self.parent != None
+    
+    def serialize(self):
+        '''
+        Feel free to delete!
+        '''
+        return {
+            "id": self.id,
+            "content": self.content,
+            "likes": random.randint(0, 200)
+        }
+
+
+
+
+    class Meta:
+        ordering = ['-id']
+    
+    @property
+    def is_retweet(self):
+        return self.parent != None
+    from django.db import models
+
+class Comment3(models.Model):
+    #id = models.AutoField(primary_key=True)
+    parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
+    comment2 = models.ForeignKey(Comment2,  on_delete=models.CASCADE, null= True, related_name="Formula1_comments3")
+    user=models.ForeignKey(User,on_delete=models.CASCADE, related_name="Formula1comments3")
+    likes = models.ManyToManyField(User, related_name='Formula1comment_user3', blank=True, through=Formula1CommentLike3)
+    content=models.TextField(blank=True, null=True)
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    timestamp=models.DateTimeField(auto_now_add=True)
+    
 
     objects = TweetManager()
 
