@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 
-#load_dotenv()
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # remember on same level as manage.py
@@ -23,13 +23,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#)=h)_wc*k%f=wk+!$x0t%1wx7*_50$a1%*75s$og(8$27$ju1'
+SECRET_KEY = os.getenv('SECRET_KEY')
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['192.168.25.105', '127.0.0.1','Gilscore3-dev.us-west-1.elasticbeanstalk.com', '172.31.26.131', '.cfe.sh', 'localhost']
+=======
+ALLOWED_HOSTS = ['192.168.25.107', '127.0.0.1','gilscore.azurewebsites.net', '172.31.26.131', '.cfe.sh', 'localhost']
+CSRF_TRUSTED_ORIGINS = ['https://gilscore.azurewebsites.net']
+>>>>>>> 1b5e9ad6d944a015050d0ff01e44d5aad4de0355
 
 #ALLOWED_HOSTS = ['SportsApp.eba-h3jtbm88.us-west-2.elasticbeanstalk.com']
 
@@ -68,11 +73,13 @@ INSTALLED_APPS = [
     # media/static storage
     'storages',
     'django_extensions',
+    'django.contrib.humanize',
 
 ]
 
 MIDDLEWARE = [      
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -106,12 +113,32 @@ WSGI_APPLICATION = 'tweetme2.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES={
-   'default':{
-      'ENGINE':'django.db.backends.sqlite3',
-      'NAME':os.path.join(BASE_DIR,'db.sqlite3'),
-   }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django',
+        'USER': 'Gillykim',
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': 'bongasport.postgres.database.azure.com',
+        'PORT': '',
+        'OPTIONS':{"sslmode":"require"}
+    }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'mydatabase',
+#     }
+# }
+# DATABASES = {
+#     'default': {
+#         'ENGINE':'django.db.backends.postgresql',
+#         'NAME':'django',
+#         'USER':'Gillykim',
+#         'PASSWORD':'30230192Gilly!',
+#         'HOST':'localhost'
+#     }
+# }
 
 #AUTH_USER_MODEL = 'accounts.User'
 
@@ -153,6 +180,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -175,7 +204,11 @@ DEFAULT_RENDERER_CLASSES = [
 # }
 
 DEFAULT_AUTHENTICATION_CLASSES = [
+<<<<<<< HEAD
     #  'rest_framework.authentication.SessionAuthentication',
+=======
+     #'rest_framework.authentication.SessionAuthentication',
+>>>>>>> 1b5e9ad6d944a015050d0ff01e44d5aad4de0355
      'knox.auth.TokenAuthentication',
     
 ]
@@ -192,26 +225,32 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
 }
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
-MEDIA_URL = '/media/'
+#MEDIA_URL = '/media/'
 
 
-# AWS_STORAGE_BUCKET_NAME =  'gilscore'
-# AWS_S3_REGION_NAME = 'us-east-1' # e.g. us-east-2
-# AWS_ACCESS_KEY_ID = 'AKIAXDRNNI42RNA4JTM7'
-# AWS_SECRET_ACCESS_KEY = 'TfNsmDoiVJhXH6WgjUt992Dhg72UKXDwvbO5KbEZ'
+
+DEFAULT_FILE_STORAGE = 'custom_azure.AzureMediaStorage'
+MEDIA_LOCATION = "media"
+
+AZURE_ACCOUNT_NAME = "gilscore"
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+
+
+# AWS_STORAGE_BUCKET_NAME =   os.getenv('AWS_STORAGE_BUCKET_NAME')
+# AWS_S3_REGION_NAME =  os.getenv('AWS_S3_REGION_NAME')# e.g. us-east-
+# AWS_ACCESS_KEY_ID =  os.getenv('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY =  os.getenv('AWS_SECRET_ACCESS_KEY')
 
 # #Tell django-storages the domain to use to refer to static files.
 # AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 # #Tell the staticfiles app to use S3Boto3 storage when writing the collected static files (when
 # #you run `collectstatic`).
-#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-STATICFILES_LOCATION = 'static'
+# STATICFILES_LOCATION = 'static'
 # STATICFILES_STORAGE = 'custom_storages.StaticStorage'
 
-MEDIAFILES_LOCATION = 'media'
-#DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
-#arn:aws:s3:::gilscore
-#AKIAXDRNNI42RNA4JTM7
-#TfNsmDoiVJhXH6WgjUt992Dhg72UKXDwvbO5KbEZ
+# MEDIAFILES_LOCATION = 'media'
+# DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'

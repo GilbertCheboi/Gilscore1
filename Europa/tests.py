@@ -105,6 +105,8 @@ class TweetTestCase(TestCase):
         response = client.delete("/api/Europa/1/delete/")
         self.assertEqual(response.status_code, 404)
         response_incorrect_owner = client.delete("/api/Europa/3/delete/")
-        self.assertEqual(response_incorrect_owner.status_code, 401)from django.test import TestCase
+        self.assertEqual(response_incorrect_owner.status_code, 401)
+        
+        from django.test import TestCase
 
 # Create your tests here.

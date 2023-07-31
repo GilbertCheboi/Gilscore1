@@ -5,14 +5,15 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
-from django.utils.http import is_safe_url
+#from django.utils.http import is_safe_url
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from ..models import Profile
+from ..models import Profile, Formula1
+from rest_framework.views import APIView
 from ..serializers import ProfileSerializer, PublicProfileSerializer
 User = get_user_model()
 
@@ -79,6 +80,71 @@ def tweet_list_view(request, *args, **kwargs):
 
 
 
+@permission_classes([IsAuthenticated])
+class UpdateUserProfileView(APIView):
+    def put(self, request, format=None):
+        # try:
+            user = self.request.user
+            username = user.username
+
+            data = self.request.data
+            
+            First_Name = data['First_Name']
+            Last_Name = data['Last_Name']
+            image = data['image']
+            #Afcon = data['Afcon']
+            # Baseball = data['Baseball']
+            # Bundesliga = data['Bundesliga']
+            # Europa = data['Europa']
+            # Formula1 = data['Formula1']
+            # Laliga = data['Laliga']
+            # NBA = data['NBA']
+            # NFL = data['NFL']
+            # Worldcup = data['Worldcup']
+            bio = data['bio']
+            location = data['location']
+            
+
+            user = User.objects.get(id=user.id)
+            Profile.objects.filter(user=user).update(
+            image=image, 
+            First_Name = First_Name,
+            Last_Name = Last_Name,
+             #   Afcon=Afcon, 
+            #     Baseball=Baseball,
+            #  Bundesliga=Bundesliga,
+            #   Europa=Europa, 
+            #   Formula1=Formula1,
+            #    Laliga=Laliga, 
+            #    NBA=NBA, 
+            #    NFL=NFL, 
+            #    Worldcup=Worldcup,
+                bio=bio, 
+                location=location
+                )
+
+            user_profile = Profile.objects.get(user=user)
+
+            user_profile_serializer = PublicProfileSerializer(user_profile)
+            return Response({'profile': user_profile_serializer.data, 'username': str(username)})
+        
+        # except:
+        #     return Response({'error': 'Something went wrong when trying to update user profile.'})
+
+
+class GetUserProfileView(APIView):
+    def get(self, request, format=None):
+        # try:
+            user = self.request.user
+            username = user.username
+            user = User.objects.get(id=user.id)
+            user_profile = Profile.objects.get(user=user)
+
+            user_profile_serializer = ProfileSerializer(user_profile)
+            return Response({'profile': user_profile_serializer.data, 'username': str(username)})
+        # except:
+        #     return Response({'error': 'Error occurred when trying to get user profile'})
+
 # @api_view(['GET', 'POST'])
 # @permission_classes([IsAuthenticated])
 # def user_follow_view(request, username, *args, **kwargs):
@@ -101,3 +167,4 @@ def tweet_list_view(request, *args, **kwargs):
 #         pass
 #     data = PublicProfileSerializer(instance=profile, context={"request": request})
 #     return Response(data.data, status=200)
+
